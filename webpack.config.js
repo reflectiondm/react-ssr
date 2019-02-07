@@ -16,15 +16,20 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader',
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader'
+        }
       },
     ],
   },
   output: {
     path: path.resolve( __dirname, 'dist' ),
     filename: '[name].bundle.js',
+  },
+  resolve: {
+    extensions: ['.js', '.jsx'],
   },
   plugins,
 };
