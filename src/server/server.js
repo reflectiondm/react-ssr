@@ -10,6 +10,8 @@ app.use(express.static(path.resolve(__dirname, '../../dist')));
 
 app.get('/*', (req, res) => {
 
+  console.log('page is loaded');
+  
   const reactApp = renderToString(<App />);
 
   res.end(htmlTemplate(reactApp));
