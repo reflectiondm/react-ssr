@@ -1,54 +1,35 @@
-import { useState, useEffect, useReducer } from 'react';
 import { getDataFromUrl } from './githubService';
 
-const FETCH_INIT = 'FETCH_INIT';
-const FETCH_SUCCESS = 'FETCH_SUCCESS';
-const FETCH_FAILED = 'FETCH_FAILED';
-
-
-const dataFetchReducer = (state, action) => {
-  switch(action.type) {
-  case FETCH_INIT: {
-    return {...state, isLoading: true, isError: false};
+export const DataFetcher = (initialData) => {
+  if (initialData) {
+    return {
+      getIsDataReady: () => true,
+      fetchedData: initialData,
+      fetchUrl: (url) => console.error(`the url ${url} was called when the data is ready`),
+      waitForData: () => Promise.resolve().then(() => console.error('waitFrData was called when the data is ready'))
+    };
   }
-  case FETCH_SUCCESS: {
-    return {...state, isLoading: false, isError: false, data: action.payload.data};
-  }
-  case FETCH_FAILED: {
-    return {...state, isLoading: false, isError: true};
-  }
-  }
-};
 
-export const useDataApi = (initialUrl, initialData) => {
-  console.log('useDataApiFired');
+  const fetchCalls = {};
 
-  const [url, setUrl] = useState(initialUrl);
-  const [state, dispatch] = useReducer(dataFetchReducer, {
-    data: initialData,
-    isLoading: false,
-    isError: false
+  const fetchedData = {};
+
+  let isDataReady = false;
+
+  const fetchUrl = url =>  fetchCalls[url] = getDataFromUrl(url);
+
+  const waitForData = () => Promise.all(
+    Object.keys(fetchCalls).map(key => fetchCalls[key].then(data => fetchedData[key] = data))
+  ).then(() => {
+    console.log('set is data ready');
+    isDataReady = true;
   });
 
-  useEffect(() => {
-    console.log('GithubRepos UseEffect fired');
 
-    const fetchData = async () => {
-      try {
-        dispatch({ type: FETCH_INIT});
-        const data = await getDataFromUrl(url);
-        dispatch({ type: FETCH_SUCCESS, payload: { data }});
-      } catch (err) {
-        dispatch({ type: FETCH_FAILED});
-      }
-    };
-
-    fetchData();
-  }, [url]);
-
-  const refreshData = (url) => {
-    setUrl(url);
+  return { 
+    fetchUrl,
+    fetchedData,
+    waitForData,
+    getIsDataReady: () => isDataReady
   };
-
-  return {...state, refreshData};
 };

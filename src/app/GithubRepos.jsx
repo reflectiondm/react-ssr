@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { getGithubUserUrl } from './urlService';
-import { useDataApi } from './dataFetcher';
+import { useDataApi } from './useDataApiHook';
 
 
 export default function GithubRepos({ user }) {
   const [query, setQuery] = useState(user);
   const url = getGithubUserUrl(query);
-  const { data, isError, isLoading, refreshData} = useDataApi(url, []);
+  const { data, isError, isLoading, refreshData} = useDataApi(url);
 
   console.log('GithubRepos rendered');
 
