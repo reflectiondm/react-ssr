@@ -8,7 +8,7 @@ function App() {
     <>
       <Greater />
       <Counter />
-      <GithubRepos user={'reflectiondm'} />
+      <GithubRepos user={'gaearon'} />
     </>
   );
 }
