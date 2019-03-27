@@ -8,11 +8,15 @@ const app = express();
 
 app.use(express.static(path.resolve(__dirname, '../../dist')));
 
+app.get('/favicon.ico', (_, res) => res.sendStatus(404));
+
 app.get('/*', (req, res) => {
 
-  console.log('page is loaded');
+  console.log('page is being loaded');
   
   const reactApp = renderToString(<App />);
+
+  console.log('page is loaded');
 
   res.end(htmlTemplate(reactApp));
 });

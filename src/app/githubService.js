@@ -1,9 +1,9 @@
 import superagent from 'superagent';
 import { getGithubUserUrl } from './urlService';
 
-export const fetchReposByUser = (user) => getDataFromurl(getGithubUserUrl(user));
+export const fetchReposByUser = (user) => getDataFromUrl(getGithubUserUrl(user));
   
-export const getDataFromurl = (url) => superagent
+export const getDataFromUrl = (url) => superagent
   .get(url)
   .then(res => {
     console.log('data received');
